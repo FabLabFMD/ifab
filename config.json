@@ -3,8 +3,8 @@
   "auth": "Bearer BI91xBzzXppQiRxyBjniBLPFctD8IGqIR0BCmQCyODxSZrZjLX7QJQQJ99BDACi5YpzAArohAAABAZBS4vKQ.DEsKhbDDeYsTi7cHcOgSMV4HrdEnNrJAPp8hTnCv55nxFqtKRfonJQQJ99BDACi5YpzAArohAAABAZBS4AHw",
   "cameraIndex": 0,
   "table": {
-    "width": 1.28,
-    "height": 0.80,
+    "width": 2.215,
+    "height": 1.015,
     "offset_inside": 0.05,
     "aruco": {
       "top-left": 16,
@@ -24,8 +24,8 @@
   "workZone": {
     "saldatura": {
       "aruco": 26,
-      "y_offset": 0.16,
-      "x_offset": 0,
+      "x_offset": 0.16,
+      "y_offset": 0,
       "theta_offset": 180,
       "text": "Zona saldatura",
       "img_path": "images/news.jpg",
@@ -33,7 +33,7 @@
     },
     "prototipazione": {
       "aruco": 22,
-      "x_offset": 0.16,
+      "x_offset": 0.25,
       "y_offset": 0,
       "theta_offset": 180,
       "text": "Zona prototipazione",
@@ -42,7 +42,7 @@
     },
     "materiali": {
       "aruco": 36,
-      "x_offset": 0.16,
+      "x_offset": 0.25,
       "y_offset": 0,
       "theta_offset": 180,
       "text": "Magazzino materiali",
