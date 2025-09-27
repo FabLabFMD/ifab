@@ -294,10 +294,14 @@ class Vision:
         if not self.cam.isOpened():
             raise IOError(f"Cannot open camera with index {self.camera_index}")
 
+        # Default dimensions for cv2.VideoCapture is 640x480. Switch to a 16:9 aspect ratio to cover the whole field
+        self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
+        self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
         # Window names
         self.cameraView_windowsName = 'ArUco Detection View'
         self.frame_width = int(self.cam.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.frame_height = int(self.cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        print(f"Camera frame dimensions: {self.frame_width}x{self.frame_height}");
 
         self.warped_windowName = 'Transformed View'
         self.warped_output_size = (int(px_windows_height * (self.width / self.height)), px_windows_height)
