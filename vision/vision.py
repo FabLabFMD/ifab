@@ -6,8 +6,22 @@ from typing import Callable, Optional, Tuple, List, Dict, Any
 
 import cv2
 import numpy as np
+import pickle
+
 from mergedeep import merge
 
+def frameRemap(frameOriginal, mtx, dist):
+    # cv2.imshow('Camera_original', frameOriginal)
+    h,  w = frameOriginal.shape[:2]
+    newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+    # undistort with remapping
+    mapx, mapy = cv2.initUndistortRectifyMap(mtx, dist, None, newcameramtx, (w,h), 5)
+    dst = cv2.remap(frameOriginal, mapx, mapy, cv2.INTER_LINEAR)
+    
+    # crop the image
+    x, y, w, h = roi
+    frame = dst[y:y+h, x:x+w]
+    return frame
 
 class ArUcoDetector:
     """Handles ArUco marker detection and related operations."""
@@ -265,7 +279,8 @@ class Vision:
                  robot=None,
                  targets=None,
                  visionStateUpdate: Optional[Callable[[Dict[str, Any]], None]] = None,
-                 display: bool = True):
+                 display: bool = True,
+                 calib_camera=None):
         """Initializes the ArUcoQuadrilateralTransformer."""
         # Real Fields parameters
         if marker_corners_ids is None:
@@ -289,6 +304,14 @@ class Vision:
         root.destroy()
 
         # Camera settings
+        if calib_camera: # Intrinsic calibration matrix
+            self.mtx = calib_camera['camera_matrix']
+            self.dist = calib_camera['dist_coeff']
+            self.rvecs = calib_camera['rvecs']
+            self.tvecs = calib_camera['tvecs']
+            self.IntrinsicLoad=True
+        else:
+            self.IntrinsicLoad=False
         self.camera_index = camera_index
         self.cam = cv2.VideoCapture(self.camera_index)
         if not self.cam.isOpened():
@@ -361,7 +384,10 @@ class Vision:
         ret, frame = self.cam.read()
         if not ret:
             raise IOError("Error: Could not read frame from camera.")
-        return frame
+        if self.IntrinsicLoad: # Se falso, NON ESISTONO self.mtx, self.dist !!!
+            return frameRemap(frame, self.mtx, self.dist)
+        else:
+            return frame
 
     def process_frame(self, frame: Optional[np.ndarray] = None, display: bool = True) -> None:
         """
@@ -541,6 +567,10 @@ class Vision:
 def vision_setup(conf: dict, visionStateUpdate: Optional[Callable[[Dict[str, Any]], None]] = None) -> Vision:
     table = conf['table']
     aruco = table['aruco']
+
+    with open(conf['cameraIntrinsic_pikleFile'], 'rb') as f:
+        calib_data = pickle.load(f)
+     
     corners_ids = [
         aruco['top-left'], aruco['top-right'],
         aruco['bottom-right'], aruco['bottom-left']]
@@ -552,7 +582,8 @@ def vision_setup(conf: dict, visionStateUpdate: Optional[Callable[[Dict[str, Any
                          width=table['width'], height=table['height'],
                          robot=conf['robot'], targets=targetMachines,
                          visionStateUpdate=visionStateUpdate,
-                         display=True)
+                         display=True,
+                         calib_camera=calib_data)
 
     # Registra la funzione di cleanup con atexit
     atexit.register(transformer.cleanup)

@@ -2,6 +2,7 @@
   "url": "https://europe.directline.botframework.com/v3/directline/conversations",
   "auth": "Bearer BI91xBzzXppQiRxyBjniBLPFctD8IGqIR0BCmQCyODxSZrZjLX7QJQQJ99BDACi5YpzAArohAAABAZBS4vKQ.DEsKhbDDeYsTi7cHcOgSMV4HrdEnNrJAPp8hTnCv55nxFqtKRfonJQQJ99BDACi5YpzAArohAAABAZBS4AHw",
   "cameraIndex": 0,
+  "cameraIntrinsic_pikleFile":"vision/Camera-test/logitec/calib_data_logitec.pkl",
   "table": {
     "width": 2.215,
     "height": 1.015,

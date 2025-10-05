@@ -20,6 +20,19 @@ def generateCamera(index: int = 0) -> tuple:
     # Default dimensions for cv2.VideoCapture is 640x480. Switch to a 16:9 aspect ratio to cover the whole field
     return cam, frame_width, frame_height
 
+def frameRemap(frameOriginal, mtx, dist):
+    # cv2.imshow('Camera_original', frameOriginal)
+    h,  w = frameOriginal.shape[:2]
+    newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+    # undistort with remapping
+    mapx, mapy = cv2.initUndistortRectifyMap(mtx, dist, None, newcameramtx, (w,h), 5)
+    dst = cv2.remap(frameOriginal, mapx, mapy, cv2.INTER_LINEAR)
+    
+    # crop the image
+    x, y, w, h = roi
+    frame = dst[y:y+h, x:x+w]
+    return frame
+
 
 if __name__ == '__main__':
 
@@ -35,16 +48,7 @@ if __name__ == '__main__':
     cam, frame_width, frame_height = generateCamera(0)
     while True:
         ret, frame_cam = cam.read()
-        # cv2.imshow('Camera_original', frame_cam)
-        h,  w = frame_cam.shape[:2]
-        newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
-        # undistort with remapping
-        mapx, mapy = cv2.initUndistortRectifyMap(mtx, dist, None, newcameramtx, (w,h), 5)
-        dst = cv2.remap(frame_cam, mapx, mapy, cv2.INTER_LINEAR)
-        
-        # crop the image
-        x, y, w, h = roi
-        frame = dst[y:y+h, x:x+w]
+        frame = frameRemap(frame_cam, mtx, dist)
 
         # Convert the image to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
