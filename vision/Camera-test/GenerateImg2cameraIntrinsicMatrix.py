@@ -9,9 +9,11 @@ for camera_info in enumerate_cameras(cv2.CAP_V4L2):
     print(f'{camera_info.index}: {camera_info.name}')
 
 # Open the default camera
-cam = cv2.VideoCapture(3)
+cam = cv2.VideoCapture(0)
 
 # Get the default frame width and height
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
 frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 

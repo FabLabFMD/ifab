@@ -1,5 +1,6 @@
 import cv2
-
+import pickle
+import numpy as np
 
 def generateCamera(index: int = 0) -> tuple:
     """
@@ -8,17 +9,42 @@ def generateCamera(index: int = 0) -> tuple:
     """
     # Open the default camera
     cam = cv2.VideoCapture(index)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
+    # cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1980);
+    # cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 1024);
+
     # Get the default frame width and height
     frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    # Default dimensions for cv2.VideoCapture is 640x480. Switch to a 16:9 aspect ratio to cover the whole field
     return cam, frame_width, frame_height
 
 
 if __name__ == '__main__':
 
+    # Carichiamo da file i dati di calibrazione intrisechi della camera, genrati con "generateInstrinsic.py"
+    with open('logitec/calib_data_logitec.pkl', 'rb') as f:
+        calib_data = pickle.load(f)
+
+    mtx = calib_data['camera_matrix']
+    dist = calib_data['dist_coeff']
+    rvecs = calib_data['rvecs']
+    tvecs = calib_data['tvecs']
+
     cam, frame_width, frame_height = generateCamera(0)
     while True:
-        ret, frame = cam.read()
+        ret, frame_cam = cam.read()
+        # cv2.imshow('Camera_original', frame_cam)
+        h,  w = frame_cam.shape[:2]
+        newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+        # undistort with remapping
+        mapx, mapy = cv2.initUndistortRectifyMap(mtx, dist, None, newcameramtx, (w,h), 5)
+        dst = cv2.remap(frame_cam, mapx, mapy, cv2.INTER_LINEAR)
+        
+        # crop the image
+        x, y, w, h = roi
+        frame = dst[y:y+h, x:x+w]
 
         # Convert the image to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

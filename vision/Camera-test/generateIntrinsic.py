@@ -46,3 +46,18 @@ print("rvecs : \n")
 print(rvecs)
 print("tvecs : \n")
 print(tvecs)
+
+
+import pickle
+
+# Raggruppiamo i dati in un dizionario
+calib_data = {
+    'camera_matrix': mtx,
+    'dist_coeff': dist,
+    'rvecs': rvecs,
+    'tvecs': tvecs
+}
+
+# Salviamo su file
+with open('logitec/calib_data_logitec.pkl', 'wb') as f:
+    pickle.dump(calib_data, f)
