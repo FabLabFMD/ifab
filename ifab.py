@@ -255,7 +255,7 @@ if __name__ == '__main__':
 
     # Crea l'app Flask e SocketIO con tutte le callback e le informazioni del progetto
     app, socketio, chat_client = create_app(conf['url'], conf['auth'], jobStation_list_top=workZone, machine_list_bot=macchinari,
-                                            ttsFun=ttsTakl_face, sttFun=listener,
+                                            ttsFun=ttsTakl_face, sttFun=None,
                                             goBotFun=robot_client.set_target, getBotStatusFun=robot_client.botStatus, updateBotFaceFun=robot_client.update_face)
 
     # Prima di avviare il server Flask, verifica che la porta sia libera

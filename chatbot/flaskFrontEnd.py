@@ -117,23 +117,23 @@ def create_app(url: str, auth: str,
         """Gestisce l'evento di connessione di un client Socket.IO"""
         if goBotFun:
             goBotFun(None)  # Invia un nuovo target al robot
-        messageBox("Nuova connessione frontend", "Avvio nuova conversazione con il bot", StyleBox.Dash_Bold)
-        # Invia un messaggio di benvenuto all'utente
-        backEnd_msg2UI('Benvenuto! Puoi scrivere un messaggio o registrare un messaggio vocale.', audio_enable=False)
-        # Gestione più robusta della connessione
-        try:
-            if chat_client.running:
-                messageBox("Chiusura conversazione", "Chiudo la conversazione precedente con il bot", StyleBox.Light)
-                chat_client.stop_conversation()
-                time.sleep(0.5)  # Breve pausa per assicurarsi che la connessione precedente sia completamente chiusa
-            # Tenta di avviare una nuova conversazione
-            if not chat_client.start_conversation():
-                messageBox("Errore connessione", "Impossibile avviare la conversazione con il bot", StyleBox.Error)
-                # Invia un messaggio di errore al frontend
-                socketio.emit('message', {'type': 'error', 'text': 'Impossibile avviare la conversazione con il bot'})
-        except Exception as e:
-            messageBox("Errore connessione", f"Errore durante l'avvio della conversazione: {str(e)}", StyleBox.Error)
-            socketio.emit('message', {'type': 'error', 'text': f'Errore durante la connessione: {str(e)}'})
+        # messageBox("Nuova connessione frontend", "Avvio nuova conversazione con il bot", StyleBox.Dash_Bold)
+        # # Invia un messaggio di benvenuto all'utente
+        # backEnd_msg2UI('Benvenuto! Puoi scrivere un messaggio o registrare un messaggio vocale.', audio_enable=False)
+        # # Gestione più robusta della connessione
+        # try:
+        #     if chat_client.running:
+        #         messageBox("Chiusura conversazione", "Chiudo la conversazione precedente con il bot", StyleBox.Light)
+        #         chat_client.stop_conversation()
+        #         time.sleep(0.5)  # Breve pausa per assicurarsi che la connessione precedente sia completamente chiusa
+        #     # Tenta di avviare una nuova conversazione
+        #     if not chat_client.start_conversation():
+        #         messageBox("Errore connessione", "Impossibile avviare la conversazione con il bot", StyleBox.Error)
+        #         # Invia un messaggio di errore al frontend
+        #         socketio.emit('message', {'type': 'error', 'text': 'Impossibile avviare la conversazione con il bot'})
+        # except Exception as e:
+        #     messageBox("Errore connessione", f"Errore durante l'avvio della conversazione: {str(e)}", StyleBox.Error)
+        #     socketio.emit('message', {'type': 'error', 'text': f'Errore durante la connessione: {str(e)}'})
 
     # Aggiungi una route per servire le immagini statiche
     @app.route('/images/<path:filename>')
@@ -400,11 +400,6 @@ if __name__ == '__main__':
 
     # Inizializza il client WebSocket per la comunicazione con il bot
     # Token Bot Ema:
-    # url = "https://europe.directline.botframework.com/v3/directline/conversations"
-    # auth = "Bearer Ec99xFUkF1i7cR8m5TLtPokIlKXvLNdCxIYyDsraweBmf2zltwUZJQQJ99BCACi5YpzAArohAAABAZBSECEz.IpVjYOfmWMOQOHYGdH4G16pGKUArN1pEpAGJebfBjSrKI71E6ZhDJQQJ99BCACi5YpzAArohAAABAZBSMCrh"
-    # Token Bot Fondazione:
-    url = "https://europe.directline.botframework.com/v3/directline/conversations"
-    auth = "Bearer BI91xBzzXppQiRxyBjniBLPFctD8IGqIR0BCmQCyODxSZrZjLX7QJQQJ99BDACi5YpzAArohAAABAZBS4vKQ.DEsKhbDDeYsTi7cHcOgSMV4HrdEnNrJAPp8hTnCv55nxFqtKRfonJQQJ99BDACi5YpzAArohAAABAZBS4AHw"
 
     # Lista di pulsanti statici (testo, percorso_immagine, testo da dire, chiave del dizionario da cui è stato generato)
     zone_lavoro = [
